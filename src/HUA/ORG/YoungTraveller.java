@@ -2,6 +2,10 @@ package HUA.ORG;
 
 import java.util.*;
 
-public abstract class YoungTraveller extends Traveller {
+public class YoungTraveller extends Traveller {
 
+    @Override
+    void calculate_similarity() {
+
+    }
 }
