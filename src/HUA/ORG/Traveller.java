@@ -7,5 +7,6 @@ public abstract class Traveller {
 	
 	
 	abstract void calculate_similarity();
+
 	
 }

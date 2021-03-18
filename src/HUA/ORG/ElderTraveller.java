@@ -8,4 +8,8 @@ public class ElderTraveller extends Traveller {
     void calculate_similarity() {
 
     }
+
+    public ElderTraveller(){
+        
+    }
 }
