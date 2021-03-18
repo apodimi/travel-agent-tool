@@ -9,7 +9,8 @@ public class MiddleTraveller extends Traveller {
 
     }
 
+    //Constructor
     public MiddleTraveller(){
-        
+
     }
 }

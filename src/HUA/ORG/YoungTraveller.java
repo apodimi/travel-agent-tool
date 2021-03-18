@@ -9,8 +9,10 @@ public class YoungTraveller extends Traveller {
 
     }
 
+
+    //Constructor
     public YoungTraveller(){
 
     }
-    
+
 }
