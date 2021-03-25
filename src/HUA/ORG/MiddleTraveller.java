@@ -8,4 +8,9 @@ public class MiddleTraveller extends Traveller {
     void calculate_similarity() {
 
     }
+
+    //Constructor
+    public MiddleTraveller(){
+
+    }
 }
