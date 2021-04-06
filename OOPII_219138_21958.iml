@@ -9,5 +9,21 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../OpenData-master/jars/commons-lang-2.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../OpenData-master/jars/jackson-annotations-2.9.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../OpenData-master/jars/jackson-core-2.9.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../OpenData-master/jars/jackson-databind-2.9.8.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../OpenData-master/jars/commons-lang-2.6-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../OpenData-master/jars/commons-lang-2.6-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
