@@ -18,10 +18,13 @@ public class OpenData {
 		 ObjectMapper mapper = new ObjectMapper();
 		 OpenWeatherMap weather_obj = mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
 		 System.out.println(city+" temperature: " + (weather_obj.getMain()).getTemp());
-		 System.out.println(city+" lat: " + weather_obj.getCoord().getLat()+" lon: " + weather_obj.getCoord().getLon());
+		 double lat = weather_obj.getCoord().getLat(); //Save the latitude
+		 double lon = weather_obj.getCoord().getLon(); //Save longitude
+		 City.setGeodesic_vector(lat,lon); //Sent the variable to method in city
 		 MediaWiki mediaWiki_obj =  mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2"),MediaWiki.class);
 		 System.out.println(city+" Wikipedia article: "+mediaWiki_obj.getQuery().getPages().get(0).getExtract());
-	}
+
+	 }
 
 
 	/*public static void main(String[] args) throws IOException {
