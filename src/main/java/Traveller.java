@@ -1,22 +1,31 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public abstract class Traveller {
 	private int[] termsVector; //degree for each term
-	private double[] geographicVector; //latitude and longitude
+	private double[] geodesicVector; //latitude and longitude
 	private City city; //city that the Traveller is in
 	protected final int maxdist = 15317; //Athens to Sydney
 
-	//sets the name of the city the traveller is in
+	/**
+	 * sets the city that the traveller is in
+	 * @param city the city the traveller is in
+	 */
 	public void setCity(City city) {
 		this.city = city;
 	}
 
-	//gets the name of the city the traveller is in
+	/**
+	 * @return the city the traveller is in
+	 */
 	public City getCity() {
 		return city;
 	}
 
-	//gets the array with the degrees for each term
+	/**
+	 * @return the array with the degrees for each term
+	 */
 	public int[] getTermsVector() {
 		return termsVector;
 	}
@@ -27,13 +36,13 @@ public abstract class Traveller {
 	}
 
 	//gets the array with the geographic vector
-	public double[] getGeographicVector() {
-		return geographicVector;
+	public double[] getGeodesicVector() {
+		return geodesicVector;
 	}
 
 	//sets the array with the geographic vector
-	public void setGeographicVector(double[] geographicVector) {
-		this.geographicVector = geographicVector;
+	public void setGeodesicVector(double[] geodesicVector) {
+		this.geodesicVector = geodesicVector;
 	}
 
 	public abstract double calculateSimilarity(City city);
@@ -55,39 +64,51 @@ public abstract class Traveller {
 		return maxCity;
 	}
 
+	/**
+	 * calculates the similarities of each city
+	 * then returns the x biggest similarities in ascending order
+	 * @param cities array list containing the cities
+	 * @param x number of biggest similarities to return
+	 * @return array list containing the x number of biggest similarities in ascending order
+	 */
 	public ArrayList<City> compareCities(ArrayList<City> cities, int x) {
-		//calculate all similarities
-		//store them in similarities array
-		//return the x biggest similarities
-		//TODO
-		ArrayList<Double> similarities = new ArrayList<>(); //contains the similarity for each city
-		ArrayList<City> cityArrayList = new ArrayList<>(); //contains the cities
-
-		for (int i = 0; i < cities.size(); i++) {
-			similarities.add(calculateSimilarity(cities.get(i)));
-			cityArrayList.add(cities.get(i));
+		//check if x is in this range [2, 5]
+		if (x < 2 || x > 5) {
+			System.err.println("Can only calculate 2 to 5 similarities");
 		}
 
-		//TODO
-		//sort similarities and cityArrayList
+		ArrayList<Double> similarities = new ArrayList<>(); //the similarities will be stored here
+		ArrayList<City> tmpCities = new ArrayList<>(); //contains the cities
+		tmpCities = cities;
 
-		bubbleSort(similarities, cityArrayList);
+		//calculate the similarity for each city and store it in the similarities array list
+		for (City value : tmpCities) {
+			similarities.add(calculateSimilarity(value));
+		}
 
-		//then return the x number of cities with the biggest
+		//sort similarities and cities so that similarities[1] corresponds to cities[1]
+		bubbleSort(similarities, tmpCities);
 
-		//cityArrayList.remove(); -> to remove unnecessary cities
+		//then remove all the unnecessary cities
+		while (tmpCities.size() != x) {
+			tmpCities.remove(0);
+		}
 
-		return cityArrayList;
+		return tmpCities;
 	}
 
-	int similarityGeodesicVector(Traveller user, City city) {
-		//TODO distance
+	double similarityGeodesicVector(Traveller user, City city) {
+		//TODO calculate distance with OpenData
 		double x = 2 / (2 - (distance(user, city))/maxdist ); //distance found from OpenData, Now using Athens -> Rome
-		double log2 = Math.log(x) / Math.log(2); //find log2 of the above equation
-		return 0;
+		return Math.log(x) / Math.log(2); //find log2 of the above equation
 	}
 
-	public void bubbleSort(ArrayList<Double> similarities, ArrayList<City> cityArrayList) {
+	/**
+	 * sorts in ascending order
+	 * @param similarities array list containing the similarities for each city
+	 * @param cities array list containing the cities
+	 */
+	public void bubbleSort(ArrayList<Double> similarities, ArrayList<City> cities) {
 		int n = similarities.size();
 		do {
 			int reached = 0;
@@ -97,9 +118,9 @@ public abstract class Traveller {
 					similarities.set(i, similarities.get(i-1));
 					similarities.set(i-1, tmp);
 
-					City tmpCity = cityArrayList.get(i);
-					cityArrayList.set(i, cityArrayList.get(i-1));
-					cityArrayList.set(i-1, tmpCity);
+					City tmpCity = cities.get(i);
+					cities.set(i, cities.get(i-1));
+					cities.set(i-1, tmpCity);
 
 					reached = i;
 				}
@@ -108,7 +129,13 @@ public abstract class Traveller {
 		} while (n>1);
 	}
 
+	//TODO find distance with OpenData
 	public double distance(Traveller user, City city) {
-		return 525.53;
+		if (city.getName().equals("Athens")) {
+			return 0; //athens -> athens
+		} else if (city.getName().equals("Amsterdam")) {
+			return 2166; //athens -> amsterdam
+		}
+		return 1051.65; //athens -> rome
 	}
 }
