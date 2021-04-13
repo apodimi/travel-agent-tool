@@ -1,16 +1,29 @@
 import java.io.IOException;
-import java.net.URL;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import weather.OpenWeatherMap;
-import wikipedia.MediaWiki;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
 
+		ArrayList<City> cityObject = new ArrayList<>();
 
+		City athens = new City();
+		athens.findTheTermsForTheCity("Athens", "GR", athens);
+		cityObject.add(athens);
 
-		City.findTheTermsForTheCity();
+		City rome = new City();
+		rome.findTheTermsForTheCity("Rome", "IT", rome);
+		cityObject.add(rome);
+
+		System.out.println(cityObject.get(0).getName());
+		System.out.println(cityObject.get(1).getName());
+
+		System.out.println(Arrays.toString(cityObject.get(0).getGeodesic_vector()));
+		System.out.println(Arrays.toString(cityObject.get(1).getGeodesic_vector()));
+
+		System.out.println(Arrays.toString(cityObject.get(0).getTerms_vector()));
 	}
 
 }

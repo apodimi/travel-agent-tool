@@ -15,15 +15,14 @@ public class OpenData {
 	 * @param country The country initials (i.e. gr, it, de).
 	 * @param appid Your API key of the OpenWeatherMap.
 	 * @return */
-	 public static String RetrieveData(String city, String country, String appid) throws  IOException {
+	 public static String RetrieveData(String city, String country, String appid, City newCity) throws  IOException {
 		 ObjectMapper mapper = new ObjectMapper();
 		 OpenWeatherMap weather_obj = mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
 		 double lat = weather_obj.getCoord().getLat(); //Save the latitude
 		 double lon = weather_obj.getCoord().getLon(); //Save longitude
-		 City.setGeodesic_vector(lat,lon); //Sent the variable to method in city
+		 newCity.setGeodesic_vector(lat, lon); //Sent the variable to method in city
 		 MediaWiki mediaWiki_obj =  mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2"),MediaWiki.class);
 		 return mediaWiki_obj.getQuery().getPages().get(0).getExtract();
-
 	 }
 
 
