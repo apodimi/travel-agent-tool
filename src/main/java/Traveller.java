@@ -17,6 +17,7 @@ public abstract class Traveller {
 	}
 
 	/**
+	 * gets the city the traveller is in
 	 * @return the city the traveller is in
 	 */
 	public City getCity() {
@@ -24,30 +25,49 @@ public abstract class Traveller {
 	}
 
 	/**
+	 * gets the array with the terms
 	 * @return the array with the degrees for each term
 	 */
 	public int[] getTermsVector() {
 		return termsVector;
 	}
 
-	//sets the array with the degrees for each term
+	/**
+	 * sets the array with the degrees for each term
+	 * @param termsVector the array containing the terms
+	 */
 	public void setTermsVector(int[] termsVector) {
 		this.termsVector = termsVector;
 	}
 
-	//gets the array with the geographic vector
+	/**
+	 * gets the array with the geodesic vector
+	 * @return an array containing the latitude and longitude
+	 */
 	public double[] getGeodesicVector() {
 		return geodesicVector;
 	}
 
-	//sets the array with the geographic vector
+	/**
+	 * sets the array with the geodesic vector
+	 * @param geodesicVector the array containing the latitude and longitude
+	 */
 	public void setGeodesicVector(double[] geodesicVector) {
 		this.geodesicVector = geodesicVector;
 	}
 
+	/**
+	 * calculates the similarity for the city the user wants to travel to
+	 * @param city the city the user wants to travel to
+	 * @return the similarity
+	 */
 	public abstract double calculateSimilarity(City city);
 
-	//compares the similarity of the cities and returns the city with the biggest similarity
+	/**
+	 * compares the similarities between the cities
+	 * @param cities an arraylist containing all the cities
+	 * @return the city with the biggest similarity
+	 */
 	public City compareCities(ArrayList<City> cities) {
 		double maxSimilarity = calculateSimilarity(cities.get(0)); //assume that the first city has the biggest similarity
 		City maxCity = cities.get(0);
@@ -97,9 +117,13 @@ public abstract class Traveller {
 		return tmpCities;
 	}
 
-	double similarityGeodesicVector(Traveller user, City city) {
-		//TODO calculate distance with OpenData
-		double x = 2 / (2 - (distance(user, city))/maxdist ); //distance found from OpenData, Now using Athens -> Rome
+	/**
+	 * calculates the similarity geodesic vector
+	 * @param city the city the user wants to travel to
+	 * @return a double representing the similarity geodesic vector
+	 */
+	double similarityGeodesicVector(City city) {
+		double x = 2 / (2 - (distance(city))/maxdist ); //distance found from OpenData, Now using Athens -> Rome
 		return Math.log(x) / Math.log(2); //find log2 of the above equation
 	}
 
@@ -129,13 +153,29 @@ public abstract class Traveller {
 		} while (n>1);
 	}
 
-	//TODO find distance with OpenData
-	public double distance(Traveller user, City city) {
-		if (city.getName().equals("Athens")) {
-			return 0; //athens -> athens
-		} else if (city.getName().equals("Amsterdam")) {
-			return 2166; //athens -> amsterdam
+	/**
+	 * code from https://www.geodatasource.com/developers/java
+	 * distance is measured in kilometers
+	 * @param city the city the user is in
+	 * @return the geodesic distance between the city the user is in and the city the user wants to travel to
+	 */
+	private double distance(City city) {
+		double[] geodesicVector = getGeodesicVector();
+		double[] cityGeodesicVector = city.getGeodesic_vector();
+		if ((geodesicVector[0] == cityGeodesicVector[0]) && (geodesicVector[1] == cityGeodesicVector[1])) {
+			return 0;
 		}
-		return 1051.65; //athens -> rome
+		else {
+			double theta = geodesicVector[1] - cityGeodesicVector[1];
+			double dist = Math.sin(Math.toRadians(geodesicVector[0])) * Math.sin(Math.toRadians(cityGeodesicVector[1])) + Math.cos(Math.toRadians(geodesicVector[0])) * Math.cos(Math.toRadians(cityGeodesicVector[1])) * Math.cos(Math.toRadians(theta));
+			dist = Math.acos(dist);
+			dist = Math.toDegrees(dist);
+			dist = dist * 60 * 1.1515;
+			dist = dist * 1.609344;
+
+			System.out.println("distance: " + dist);
+
+			return dist;
+		}
 	}
 }

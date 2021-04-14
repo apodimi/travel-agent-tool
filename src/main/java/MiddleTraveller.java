@@ -1,16 +1,11 @@
 public class MiddleTraveller extends Traveller {
     private int age; //(25,60]
     private double p = 0.5;
-    private Traveller user;
 
-    public MiddleTraveller() {
-
-    }
-
-    public MiddleTraveller(Traveller user) {
-        this.user = user;
-    }
-
+    /**
+     * sets the age of the traveller
+     * @param age the age of the traveller
+     */
     public void setAge(int age) {
         if (age > 25 && age <= 60) {
             this.age = age;
@@ -19,21 +14,40 @@ public class MiddleTraveller extends Traveller {
         }
     }
 
+    /**
+     * gets the age of the traveller
+     * @return the age of the traveller
+     */
     public int getAge() {
         return age;
     }
 
+    /**
+     * calculates the similarity for the city the user wants to travel to
+     * @param city the city the user wants to travel to
+     * @return the similarity
+     */
     @Override
     public double calculateSimilarity(City city) {
-        return similarity(user, city);
+        return similarity(city);
     }
 
-    public double similarity(Traveller user,City city) {
-        return p*similarity_terms_vector(user, city)
-                + (1-p)*similarityGeodesicVector(user, city);
+    /**
+     * calculate the similarity based on the terms similarity and the geodesic vector similarity
+     * @param city the city the user wants to travel to
+     * @return the similarity
+     */
+    public double similarity(City city) {
+        return p*similarity_terms_vector(city)
+                + (1-p)*similarityGeodesicVector(city);
     }
 
-    private double similarity_terms_vector(Traveller user, City city) {
+    /**
+     * calculates the terms similarity
+     * @param city the city the user wants to travel to
+     * @return the similarity based on the terms
+     */
+    private double similarity_terms_vector(City city) {
         int[] userVector = getTermsVector();
         int[] cityVector = city.getTerms_vector();
 
