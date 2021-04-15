@@ -173,8 +173,6 @@ public abstract class Traveller {
 			dist = dist * 60 * 1.1515;
 			dist = dist * 1.609344;
 
-			System.out.println("distance: " + dist);
-
 			return dist;
 		}
 	}
