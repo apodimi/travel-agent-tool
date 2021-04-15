@@ -13,19 +13,32 @@ public class City {
 
     }
 
-    //Getter and Setter
+    /**
+     * gets the name of the traveller
+     * @return the name of the traveller
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * set the name of the traveller
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * gets the array with the terms about the city
+     * @return the array with the terms about the city
+     */
     public int[] getTerms_vector() {
         return terms_vector;
     }
 
+    /**
+     * set the array with the terms about the city
+     */
     public void setTerms_vector(int theCafeNumber,int  theSeaNumber,int theMuseumsNumber,int theRestaurantNumber,int theStadiumNumber,int theParkNumber,int theClubNumber,int theFestivalNumber,int theHospitalNumber,int theTheaterNumber) {
         this.terms_vector[0] = theCafeNumber;
         this.terms_vector[1] = theSeaNumber;
@@ -39,15 +52,25 @@ public class City {
         this.terms_vector[9] = theTheaterNumber;
     }
 
+    /**
+     * gets the array with the latitude and longitude
+     * @return the array with the latitude and longitude
+     */
     public double[] getGeodesic_vector() {
         return geodesic_vector;
     }
 
+    /**
+     * set the array with the latitude and longitude
+     */
     public void setGeodesic_vector(double lat, double lon) {
         this.geodesic_vector[0] = lat;
         this.geodesic_vector[1] = lon;
     }
 
+    /**
+     * The method which use the API to take the data
+     */
     public void findTheTermsForTheCity(String city, String country, City newCity) throws IOException {
         //API KEY for the API
         String appid ="dd507317accd64c8447a7fadba863c9d";
