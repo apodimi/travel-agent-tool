@@ -1,18 +1,11 @@
-import java.util.Arrays;
-
 public class YoungTraveller extends Traveller {
     private int age; //[16,25]
     private double p = 0.95;
-    private Traveller user;
 
-    public YoungTraveller() {
-
-    }
-
-    public YoungTraveller(Traveller user) {
-        this.user = user;
-    }
-
+    /**
+     * sets the age of the traveller
+     * @param age the age of the traveller
+     */
     public void setAge(int age) {
         if (age >= 16 && age <= 25) {
             this.age = age;
@@ -21,21 +14,40 @@ public class YoungTraveller extends Traveller {
         }
     }
 
+    /**
+     * gets the age of the traveller
+     * @return the age of the traveller
+     */
     public int getAge() {
         return age;
     }
 
+    /**
+     * calculates the similarity for the city the user wants to travel to
+     * @param city the city the user wants to travel to
+     * @return the similarity
+     */
     @Override
     public double calculateSimilarity(City city) {
-        return similarity(user, city);
+        return similarity(city);
     }
 
-    public double similarity(Traveller user,City city) {
-        return p*similarity_terms_vector(user, city)
-                + (1-p)*similarityGeodesicVector(user, city);
+    /**
+     * calculate the similarity based on the terms similarity and the geodesic vector similarity
+     * @param city the city the user wants to travel to
+     * @return the similarity
+     */
+    public double similarity(City city) {
+        return p*similarity_terms_vector(city)
+                + (1-p)*similarityGeodesicVector(city);
     }
 
-    public double similarity_terms_vector(Traveller user, City city) {
+    /**
+     * calculates the terms similarity
+     * @param city the city the user wants to travel to
+     * @return the similarity based on the terms
+     */
+    public double similarity_terms_vector(City city) {
         int[] userTerms = getTermsVector(); //get the user's terms vector
         int[] cityTerms = city.getTerms_vector();
         int sum = 0;
