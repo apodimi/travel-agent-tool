@@ -7,10 +7,13 @@ public class ElderTraveller extends Traveller {
      * @param age the age of the traveller
      */
     public void setAge(int age) {
-        if (age > 60 && age <= 115) {
-            this.age = age;
-        } else {
-            System.err.println("Age must be between 60 and 115 years old!");
+        try {
+            if (age < 61 || age > 115)
+                throw new IndexOutOfBoundsException("Age must be in the range of 16 and 25!");
+        } catch (Exception e) {
+            System.out.println("Age is out of bounds! Will be converted to 61");
+        } finally {
+            this.age = 61;
         }
     }
 

@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class YoungTraveller extends Traveller {
     private int age; //[16,25]
     private double p = 0.95;
@@ -7,10 +9,13 @@ public class YoungTraveller extends Traveller {
      * @param age the age of the traveller
      */
     public void setAge(int age) {
-        if (age >= 16 && age <= 25) {
-            this.age = age;
-        } else {
-            System.err.println("Age must be between 16 and 25 years old!");
+        try {
+            if (age < 16 || age > 25)
+                throw new IndexOutOfBoundsException("Age must be in the range of 16 and 25!");
+        } catch (Exception e) {
+            System.out.println("Age is out of bounds! Will be converted to 21");
+        } finally {
+            this.age = 21;
         }
     }
 
