@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+
 public class ElderTraveller extends Traveller {
     private int age; //(60-115]
     private double p = 0.05;
@@ -25,13 +29,9 @@ public class ElderTraveller extends Traveller {
         return age;
     }
 
-    /**
-     * calculates the similarity for the city the user wants to travel to
-     * @param city the city the user wants to travel to
-     * @return the similarity
-     */
     @Override
-    public double calculateSimilarity(City city) {
+    public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException {
+        City city = checkIfCityExistsInCollection(cityName, countryCode, cities);
         return similarity(city);
     }
 
@@ -67,5 +67,15 @@ public class ElderTraveller extends Traveller {
             sum += upperPart/lowerPart;
         }
         return sum;
+    }
+
+    @Override
+    public int compareTo(Traveller o) {
+        return getTimestamp().compareTo(o.getTimestamp());
+    }
+
+    @Override
+    public String toString() {
+        return "ElderTraveller [ name: "+getName()+", age: "+age+", visit: "+getVisit()+", timestamp: "+getTimestamp()+", termsVector: "+ Arrays.toString(getTermsVector())+", city: "+getCity().getName()+", geodesicVector: "+Arrays.toString(getGeodesicVector())+" ]";
     }
 }
