@@ -1,8 +1,15 @@
-import java.util.Scanner;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class YoungTraveller extends Traveller {
     private int age; //[16,25]
-    private double p = 0.95;
+    private final double p = 0.95;
 
     /**
      * sets the age of the traveller
@@ -27,13 +34,9 @@ public class YoungTraveller extends Traveller {
         return age;
     }
 
-    /**
-     * calculates the similarity for the city the user wants to travel to
-     * @param city the city the user wants to travel to
-     * @return the similarity
-     */
     @Override
-    public double calculateSimilarity(City city) {
+    public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException {
+        City city = checkIfCityExistsInCollection(cityName, countryCode, cities);
         return similarity(city);
     }
 
@@ -62,5 +65,15 @@ public class YoungTraveller extends Traveller {
         }
 
         return 1/(1 + Math.sqrt(sum)); //return the division
+    }
+
+    @Override
+    public int compareTo(Traveller o) {
+        return getTimestamp().compareTo(o.getTimestamp());
+    }
+
+    @Override
+    public String toString() {
+        return "YoungTraveller [ name: "+getName()+", age: "+age+", visit: "+getVisit()+", timestamp: "+getTimestamp()+", termsVector: "+Arrays.toString(getTermsVector())+", city: "+getCity().getName()+", geodesicVector: "+Arrays.toString(getGeodesicVector())+" ]";
     }
 }

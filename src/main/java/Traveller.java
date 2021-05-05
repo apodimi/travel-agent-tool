@@ -1,19 +1,75 @@
-import java.lang.reflect.Array;
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 
-public abstract class Traveller {
+public abstract class Traveller implements Comparable<Traveller>{
 	private int[] termsVector; //degree for each term
 	private double[] geodesicVector; //latitude and longitude
 	private City city; //city that the Traveller is in
 	protected final int maxdist = 15317; //Athens to Sydney
+	private Timestamp timestamp; //time of search
+	private String visit; //name of the city that we recommend
+
+	/**
+	 * gets the name of the traveller
+	 * @return the name of the traveller
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * sets the name of the traveller
+	 * @param name the name of the traveller
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	private String name; //the name of the traveller
+
+	/**
+	 * gets the name of the city that we recommend
+	 * @return the name of the city that we recommend
+	 */
+	public String getVisit() {
+		return visit;
+	}
+
+	/**
+	 * sets the name of the city that we recommend
+	 * @param visit the name of the city that we recommend
+	 */
+	public void setVisit(String visit) {
+		this.visit = visit;
+	}
+
+	/**
+	 * sets the timestamp of the search
+	 * @param timestamp the time and date of the search
+	 */
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * gets the timestamp of the search
+	 * @return the timestamp of the search
+	 */
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
 
 	/**
 	 * sets the city that the traveller is in
-	 * @param city the city the traveller is in
+	 * @param cityName the name of the city
+	 * @param countryCode the code of the country the city is in
+	 * @param cities all the cities stored in a HashMap
+	 * @throws IOException
 	 */
-	public void setCity(City city) {
-		this.city = city;
+	public void setCity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException {
+		this.city = checkIfCityExistsInCollection(cityName, countryCode, cities);
 	}
 
 	/**
@@ -56,19 +112,14 @@ public abstract class Traveller {
 		this.geodesicVector = geodesicVector;
 	}
 
-	/**
-	 * calculates the similarity for the city the user wants to travel to
-	 * @param city the city the user wants to travel to
-	 * @return the similarity
-	 */
-	public abstract double calculateSimilarity(City city);
+	public abstract double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException;
 
 	/**
 	 * compares the similarities between the cities
 	 * @param cities an arraylist containing all the cities
 	 * @return the city with the biggest similarity
 	 */
-	public City compareCities(ArrayList<City> cities) {
+	/*public City compareCities(ArrayList<City> cities) {
 		double maxSimilarity = calculateSimilarity(cities.get(0)); //assume that the first city has the biggest similarity
 		City maxCity = cities.get(0);
 
@@ -82,8 +133,8 @@ public abstract class Traveller {
 		}
 
 		return maxCity;
-	}
-
+	}*/
+//TODO FIX THIS
 	/**
 	 * calculates the similarities of each city
 	 * then returns the x biggest similarities in ascending order
@@ -91,7 +142,7 @@ public abstract class Traveller {
 	 * @param x number of biggest similarities to return
 	 * @return array list containing the x number of biggest similarities in ascending order
 	 */
-	public ArrayList<City> compareCities(ArrayList<City> cities, int x) {
+	/*public ArrayList<City> compareCities(ArrayList<City> cities, int x) {
 		//check if x is in this range [2, 5]
 		if (x < 2 || x > 5) {
 			System.err.println("Can only calculate 2 to 5 similarities");
@@ -115,7 +166,7 @@ public abstract class Traveller {
 		}
 
 		return tmpCities;
-	}
+	}*/
 
 	/**
 	 * calculates the similarity geodesic vector
@@ -175,5 +226,24 @@ public abstract class Traveller {
 
 			return dist;
 		}
+	}
+
+	/**
+	 * checks if the city you are looking for already exists in the collection
+	 * if not it retrieves the data for the city and adds the city to the collection
+	 * if the city exists in the collection then it returns the city
+	 * @param cityName the name of the city
+	 * @param countryCode the code of the country the city is in
+	 * @param cities the collection containing all the cities
+	 * @return the city we are looking for
+	 * @throws IOException
+	 */
+	public City checkIfCityExistsInCollection(String cityName, String countryCode, HashMap<String, City> cities) throws IOException {
+		if (!cities.containsKey(cityName)){
+			City newCity = new City();
+			newCity.findTheTermsForTheCity(cityName, countryCode, newCity);
+			cities.put(cityName, newCity);
+		}
+		return cities.get(cityName);
 	}
 }
