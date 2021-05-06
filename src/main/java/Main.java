@@ -12,6 +12,7 @@ public class Main {
 
 		HashMap < String, City > map = new HashMap < String, City > ();
 
+
 		//Driver for the JDBC
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 
@@ -48,6 +49,8 @@ public class Main {
 
 			}
 
+
+
 			City athens = new City();
 			athens.findTheTermsForTheCity("Athens", "GR", athens);
 			map.put(athens.getName(), athens);
@@ -68,37 +71,37 @@ public class Main {
 			PreparedStatement db = con.prepareStatement(sql);
 
 			// iterate to all the keys stored on our hashmap and add them to the database
-
 			for (String s: map.keySet()) {
-				int arrWithTerms[] = map.get(s).getTerms_vector();
-				double arrWithGeo[] = map.get(s).getGeodesic_vector();
-				db.setString(1, map.get(s).getName());
-				db.setInt(2, arrWithTerms[0]);
-				db.setInt(3, arrWithTerms[1]);
-				db.setInt(4, arrWithTerms[2]);
-				db.setInt(5, arrWithTerms[3]);
-				db.setInt(6, arrWithTerms[4]);
-				db.setInt(7, arrWithTerms[5]);
-				db.setInt(8, arrWithTerms[6]);
-				db.setInt(9, arrWithTerms[7]);
-				db.setInt(10, arrWithTerms[8]);
-				db.setInt(11, arrWithTerms[9]);
-				db.setDouble(12, arrWithGeo[0]);
-				db.setDouble(13, arrWithGeo[1]);
-				db.executeUpdate();
-
-				//OR THIS ONE
-        		/*db.setString(1, map.get(s).getName());
-        		for (int i =0; i< arrWithTerms.length; i++){
-        			db.setInt((i+2), arrWithTerms[i]);
-        		}
-        		for (int i = 0; i <arrWithGeo.length; i++){
-        			db.setDouble((i+12), arrWithGeo[0]);
-        		}*/
+				ResultSet results = stmt.executeQuery("SELECT * FROM CITY");
+				boolean originalCity = true;
+				// For each row of
+				while (results.next()) {
+					String city1 =results.getString(1);
+					String city2 =map.get(s).getName();
+					if (city1.equals(city2)){
+						originalCity = false;
+					}
+				}
+				if (originalCity == true){
+					int arrWithTerms[] = map.get(s).getTerms_vector();
+					double arrWithGeo[] = map.get(s).getGeodesic_vector();
+					db.setString(1, map.get(s).getName());
+					for (int i =0; i< arrWithTerms.length; i++){
+						db.setInt((i+2), arrWithTerms[i]);
+					}
+					for (int i = 0; i <arrWithGeo.length; i++){
+						db.setDouble((i+12), arrWithGeo[i]);
+					}
+					db.executeUpdate();
+				}
 			}
+
+
+            con.close();
 
 		} catch (Exception e) {
 			System.out.println("There is something wrong: " + e + "");
+            con.close();
 		}
 
 	}
