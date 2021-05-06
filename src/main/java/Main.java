@@ -97,9 +97,11 @@ public class Main {
 			}
 
 
+            con.close();
 
 		} catch (Exception e) {
 			System.out.println("There is something wrong: " + e + "");
+            con.close();
 		}
 
 	}
