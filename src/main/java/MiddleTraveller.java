@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -30,7 +31,7 @@ public class MiddleTraveller extends Traveller {
     }
 
     @Override
-    public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException {
+    public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities, ArrayList<Traveller> travellers) throws IOException {
         City city = checkIfCityExistsInCollection(cityName, countryCode, cities);
         return similarity(city);
     }

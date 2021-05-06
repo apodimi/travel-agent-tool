@@ -1,3 +1,4 @@
+import javax.swing.text.TabableView;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -71,6 +72,10 @@ public abstract class Traveller implements Comparable<Traveller>{
 		this.city = checkIfCityExistsInCollection(cityName, countryCode, cities);
 	}
 
+	public void setCity(City city) {
+		this.city = city;
+	}
+
 	/**
 	 * gets the city the traveller is in
 	 * @return the city the traveller is in
@@ -111,22 +116,22 @@ public abstract class Traveller implements Comparable<Traveller>{
 		this.geodesicVector = geodesicVector;
 	}
 
-	public abstract double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException;
+	public abstract double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities, ArrayList<Traveller> travellers) throws IOException;
 
 	/**
 	 * compares the similarities between the cities
 	 * @param cities an arraylist containing all the cities
 	 * @return the city with the biggest similarity
 	 */
-	public City compareCities(HashMap<String, City> cities) throws IOException {
+	public City compareCities(HashMap<String, City> cities, ArrayList<Traveller> travellers) throws IOException {
 		Iterator<Map.Entry<String, City>> mapIterator = cities.entrySet().iterator(); //create iterator for the hashmap
 		Map.Entry<String, City> cityEntry = mapIterator.next(); //get the first entry
 		City maxCity = cityEntry.getValue(); //get the value of the entry
-		double maxSimilarity = calculateSimilarity(maxCity.getName(), maxCity.getCountryCode(), cities); //assume that the first city has the biggest similarity
+		double maxSimilarity = calculateSimilarity(maxCity.getName(), maxCity.getCountryCode(), cities, travellers); //assume that the first city has the biggest similarity
 
 		//finds the city with the biggest similarity
 		for (Map.Entry<String, City> mapElement : cities.entrySet()) {
-			double tmp = calculateSimilarity(mapElement.getValue().getName(), mapElement.getValue().getCountryCode(), cities);
+			double tmp = calculateSimilarity(mapElement.getValue().getName(), mapElement.getValue().getCountryCode(), cities, travellers);
 			if (tmp > maxSimilarity) {
 				maxSimilarity = tmp;
 				maxCity = mapElement.getValue();
@@ -143,7 +148,7 @@ public abstract class Traveller implements Comparable<Traveller>{
 	 * @param x number of biggest similarities to return
 	 * @return array list containing the x number of biggest similarities in ascending order
 	 */
-	public ArrayList<City> compareCities(HashMap<String, City> cities, int x) throws IOException {
+	public ArrayList<City> compareCities(HashMap<String, City> cities, int x, ArrayList<Traveller> travellers) throws IOException {
 		//check if x is in this range [2, 5]
 		if (x < 2 || x > 5) {
 			System.err.println("Can only calculate 2 to 5 similarities");
@@ -153,7 +158,7 @@ public abstract class Traveller implements Comparable<Traveller>{
 
 		//calculate the similarity for each city and store it in the similarities hashMap as value and the city as key
 		for (Map.Entry<String, City> cityEntry : cities.entrySet()) {
-			similarities.put(cityEntry.getValue(), calculateSimilarity(cityEntry.getValue().getName(), cityEntry.getValue().getCountryCode(), cities));
+			similarities.put(cityEntry.getValue(), calculateSimilarity(cityEntry.getValue().getName(), cityEntry.getValue().getCountryCode(), cities, travellers));
 		}
 
 		//create a list from the hashMap and sort it by value, code from:https://www.geeksforgeeks.org/sorting-a-hashmap-according-to-values/

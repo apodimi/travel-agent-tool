@@ -37,11 +37,24 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../OJDBC8-Full" />
+          <root url="file://$USER_HOME$/OJDBC8-Full" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../OJDBC8-Full" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/OJDBC8-Full" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/jars" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/jars" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/jars" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/jars" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
   </component>

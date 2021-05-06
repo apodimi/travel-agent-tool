@@ -1,10 +1,23 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 public class YoungTraveller extends Traveller {
     private int age; //[16,25]
     private final double p = 0.95;
+
+    public YoungTraveller(){}
+
+    public YoungTraveller(YoungTraveller youngTraveller) {
+        setName(youngTraveller.getName());
+        setCity(youngTraveller.getCity());
+        setAge(youngTraveller.getAge());
+        setVisit(youngTraveller.getVisit());
+        setGeodesicVector(youngTraveller.getGeodesicVector());
+        setTermsVector(youngTraveller.getTermsVector());
+        setTimestamp(youngTraveller.getTimestamp());
+    }
 
     /**
      * sets the age of the traveller
@@ -30,8 +43,9 @@ public class YoungTraveller extends Traveller {
     }
 
     @Override
-    public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities) throws IOException {
+    public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities, ArrayList<Traveller> travellers) throws IOException {
         City city = checkIfCityExistsInCollection(cityName, countryCode, cities);
+        travellers.add(new YoungTraveller(this));
         return similarity(city);
     }
 
