@@ -5,12 +5,21 @@ import java.util.*;
 public class City {
 
     private String name;
+    private String countryCode;
     private int[] terms_vector = new int[10];
     private double[] geodesic_vector = new double[2];
 
     //Constructor
     public City(){
 
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     /**
@@ -80,6 +89,9 @@ public class City {
 
         //Set the name of the city witch user choose
         setName(city);
+
+        //Set the code of the country
+        setCountryCode(country);
 
         int theCafeNumber = CountWords.countCriterionfCity(theWikipediaText,"cafe");
         int theSeaNumber = CountWords.countCriterionfCity(theWikipediaText,"sea");
