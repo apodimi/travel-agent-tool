@@ -24,11 +24,13 @@ public class Main {
 
 		try {
 
+			//Take all the records from the database
 			ResultSet results = stmt.executeQuery("SELECT * FROM CITY");
 
 			// For each row of
 			while (results.next()) {
 
+				//Create object for each row and insert the data
 				City city = new City();
 
 				city.setName(results.getString(1));
@@ -45,11 +47,10 @@ public class Main {
 
 				city.setGeodesic_vector(results.getDouble(12), results.getDouble(13));
 
+				//Put yhe object in hashmap
 				map.put(city.getName(), city);
 
 			}
-
-
 
 			City athens = new City();
 			athens.findTheTermsForTheCity("Athens", "GR", athens);
@@ -75,6 +76,7 @@ public class Main {
 				ResultSet results = stmt.executeQuery("SELECT * FROM CITY");
 				boolean originalCity = true;
 				// For each row of
+				//Check for duplicate
 				while (results.next()) {
 					String city1 =results.getString(1);
 					String city2 =map.get(s).getName();
@@ -96,7 +98,7 @@ public class Main {
 				}
 			}
 
-
+			//Close the connection to database
             con.close();
 
 		} catch (Exception e) {
