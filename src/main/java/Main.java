@@ -84,6 +84,8 @@ public class Main {
 						originalCity = false;
 					}
 				}
+
+				//If the city is not in the database then is inserted
 				if (originalCity == true){
 					int arrWithTerms[] = map.get(s).getTerms_vector();
 					double arrWithGeo[] = map.get(s).getGeodesic_vector();
