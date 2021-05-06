@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public abstract class Traveller implements Comparable<Traveller>{
 	private int[] termsVector; //degree for each term
@@ -119,22 +118,24 @@ public abstract class Traveller implements Comparable<Traveller>{
 	 * @param cities an arraylist containing all the cities
 	 * @return the city with the biggest similarity
 	 */
-	/*public City compareCities(ArrayList<City> cities) {
-		double maxSimilarity = calculateSimilarity(cities.get(0)); //assume that the first city has the biggest similarity
-		City maxCity = cities.get(0);
+	public City compareCities(HashMap<String, City> cities) throws IOException {
+		Iterator<Map.Entry<String, City>> mapIterator = cities.entrySet().iterator(); //create iterator for the hashmap
+		Map.Entry<String, City> cityEntry = mapIterator.next(); //get the first entry
+		City maxCity = cityEntry.getValue(); //get the value of the entry
+		double maxSimilarity = calculateSimilarity(maxCity.getName(), maxCity.getCountryCode(), cities); //assume that the first city has the biggest similarity
 
 		//finds the city with the biggest similarity
-		for (int i = 0; i < cities.size(); i++) {
-			double tmp = calculateSimilarity(cities.get(i));
+		for (Map.Entry<String, City> mapElement : cities.entrySet()) {
+			double tmp = calculateSimilarity(mapElement.getValue().getName(), mapElement.getValue().getCountryCode(), cities);
 			if (tmp > maxSimilarity) {
 				maxSimilarity = tmp;
-				maxCity = cities.get(i);
+				maxCity = mapElement.getValue();
 			}
 		}
 
 		return maxCity;
-	}*/
-//TODO FIX THIS
+	}
+
 	/**
 	 * calculates the similarities of each city
 	 * then returns the x biggest similarities in ascending order
@@ -142,31 +143,37 @@ public abstract class Traveller implements Comparable<Traveller>{
 	 * @param x number of biggest similarities to return
 	 * @return array list containing the x number of biggest similarities in ascending order
 	 */
-	/*public ArrayList<City> compareCities(ArrayList<City> cities, int x) {
+	public ArrayList<City> compareCities(HashMap<String, City> cities, int x) throws IOException {
 		//check if x is in this range [2, 5]
 		if (x < 2 || x > 5) {
 			System.err.println("Can only calculate 2 to 5 similarities");
 		}
 
-		ArrayList<Double> similarities = new ArrayList<>(); //the similarities will be stored here
-		ArrayList<City> tmpCities = new ArrayList<>(); //contains the cities
-		tmpCities = cities;
+		HashMap<City, Double> similarities = new HashMap<>(); //the similarities will be stored here
 
-		//calculate the similarity for each city and store it in the similarities array list
-		for (City value : tmpCities) {
-			similarities.add(calculateSimilarity(value));
+		//calculate the similarity for each city and store it in the similarities hashMap as value and the city as key
+		for (Map.Entry<String, City> cityEntry : cities.entrySet()) {
+			similarities.put(cityEntry.getValue(), calculateSimilarity(cityEntry.getValue().getName(), cityEntry.getValue().getCountryCode(), cities));
 		}
 
-		//sort similarities and cities so that similarities[1] corresponds to cities[1]
-		bubbleSort(similarities, tmpCities);
+		//create a list from the hashMap and sort it by value, code from:https://www.geeksforgeeks.org/sorting-a-hashmap-according-to-values/
+		List<Map.Entry<City, Double> > list = new LinkedList<>(similarities.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<City, Double>>() {
+			@Override
+			public int compare(Map.Entry<City, Double> o1, Map.Entry<City, Double> o2) {
+				return (o1.getValue().compareTo(o2.getValue()));
+			}
+		});
 
-		//then remove all the unnecessary cities
-		while (tmpCities.size() != x) {
-			tmpCities.remove(0);
+		//create an arrayList and store the x amount of cities with the biggest similarities
+		ArrayList<City> sortedCities = new ArrayList<>();
+		for (int i = list.size()-1; i >= list.size()-x; i--) {
+			sortedCities.add(list.get(i).getKey());
 		}
 
-		return tmpCities;
-	}*/
+		//return the arrayList
+		return sortedCities;
+	}
 
 	/**
 	 * calculates the similarity geodesic vector
@@ -176,32 +183,6 @@ public abstract class Traveller implements Comparable<Traveller>{
 	double similarityGeodesicVector(City city) {
 		double x = 2 / (2 - (distance(city))/maxdist ); //distance found from OpenData, Now using Athens -> Rome
 		return Math.log(x) / Math.log(2); //find log2 of the above equation
-	}
-
-	/**
-	 * sorts in ascending order
-	 * @param similarities array list containing the similarities for each city
-	 * @param cities array list containing the cities
-	 */
-	public void bubbleSort(ArrayList<Double> similarities, ArrayList<City> cities) {
-		int n = similarities.size();
-		do {
-			int reached = 0;
-			for (int i = 1; i < similarities.size(); i++) {
-				if (similarities.get(i-1).compareTo(similarities.get(i)) > 0) {
-					double tmp = similarities.get(i);
-					similarities.set(i, similarities.get(i-1));
-					similarities.set(i-1, tmp);
-
-					City tmpCity = cities.get(i);
-					cities.set(i, cities.get(i-1));
-					cities.set(i-1, tmpCity);
-
-					reached = i;
-				}
-			}
-			n = reached;
-		} while (n>1);
 	}
 
 	/**
