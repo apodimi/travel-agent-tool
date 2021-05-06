@@ -88,6 +88,7 @@ public class Main {
 						originalCity = false;
 					}
 				}
+				//If the city is not in the database then is inserted
 				if (originalCity == true){
 					int arrWithTerms[] = map.get(s).getTerms_vector();
 					double arrWithGeo[] = map.get(s).getGeodesic_vector();
@@ -118,8 +119,6 @@ public class Main {
 		City turin = new City();
 		turin.findTheTermsForTheCity("Turin", "IT", turin);
 		map.put("Turin", turin);
-
-
 
 		//writes all the travellers in a JSON file
 		writeJSON(travellers);

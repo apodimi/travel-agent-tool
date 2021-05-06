@@ -7,6 +7,18 @@ public class ElderTraveller extends Traveller {
     private int age; //(60-115]
     private double p = 0.05;
 
+    public ElderTraveller(){}
+
+    public ElderTraveller(ElderTraveller elderTraveller) {
+        setName(elderTraveller.getName());
+        setCity(elderTraveller.getCity());
+        setAge(elderTraveller.getAge());
+        setVisit(elderTraveller.getVisit());
+        setGeodesicVector(elderTraveller.getGeodesicVector());
+        setTermsVector(elderTraveller.getTermsVector());
+        setTimestamp(elderTraveller.getTimestamp());
+    }
+
     /**
      * sets the age of the traveller
      * @param age the age of the traveller
@@ -33,6 +45,7 @@ public class ElderTraveller extends Traveller {
     @Override
     public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities, ArrayList<Traveller> travellers) throws IOException {
         City city = checkIfCityExistsInCollection(cityName, countryCode, cities);
+        travellers.add(new ElderTraveller(this));
         return similarity(city);
     }
 
