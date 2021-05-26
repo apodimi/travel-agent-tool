@@ -2,13 +2,17 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.HashMap;
 import java.sql.*;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
 public class Main {
+
 
 	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
 
@@ -55,6 +59,8 @@ public class Main {
 				map.put(city.getName(), city);
 
 			}
+
+			Main.gui();
 
 			City athens = new City();
 			athens.findTheTermsForTheCity("Athens", "GR", athens);
@@ -176,5 +182,111 @@ public class Main {
 		mapper.enableDefaultTyping();
 		AllTravellers data = mapper.readValue(new File("travellers.json"), AllTravellers.class);
 		return data.getAllTravellers();
+	}
+
+	private static void gui(){
+		// Create and set up a frame window
+		JFrame frame = new JFrame("Layout");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JPanel panel1 = new JPanel();
+		panel1.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+		panel1.setLayout(new GridLayout(0, 2,30,30));
+		JLabel travellerName = new JLabel("Traveller name");
+		JTextField travellerNameInput = new JTextField(20);
+		JLabel travellerAge = new JLabel("Traveller age");
+		JTextField travellerAgeInput = new JTextField(20);
+		JLabel travellerCity = new JLabel("Traveller city");
+		JTextField travellerCityInput = new JTextField(20);
+		JLabel travellerCountry = new JLabel("Traveller country");
+		JTextField travellerCountryInput = new JTextField(20);
+		JLabel cityName = new JLabel("City name");
+		JTextField cityNameInput = new JTextField(20);
+		JLabel cityCode = new JLabel("City code");
+		JTextField cityCodeInput = new JTextField(20);
+
+		SpinnerModel spinnerModel1 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel2 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel3 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel4 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel5 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel6 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel7 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel8 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel9 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel10 = new SpinnerNumberModel(5, 0, 10, 1);
+
+
+		JLabel cafe = new JLabel("Cafe");
+		JSpinner cafeSlider = new JSpinner(spinnerModel1);
+		JLabel sea = new JLabel("Sea");
+		JSpinner seaSlider = new JSpinner(spinnerModel2);
+		JLabel museums = new JLabel("Museums");
+		JSpinner museumsSlider = new JSpinner(spinnerModel3);
+		JLabel restaurant = new JLabel("Restaurant");
+		JSpinner restaurantSlider = new JSpinner(spinnerModel4);
+		JLabel stadium = new JLabel("Stadium");
+		JSpinner stadiumSlider = new JSpinner(spinnerModel5);
+		JLabel park = new JLabel("Park");
+		JSpinner parkSlider = new JSpinner(spinnerModel6);
+		JLabel club = new JLabel("Club");
+		JSpinner clubSlider = new JSpinner(spinnerModel7);
+		JLabel festival = new JLabel("Festival");
+		JSpinner festivalSlider = new JSpinner(spinnerModel8);
+		JLabel hospital = new JLabel("Hospital");
+		JSpinner hospitalSlider = new JSpinner(spinnerModel9);
+		JLabel theater = new JLabel("Theater");
+		JSpinner theaterSlider = new JSpinner(spinnerModel10);
+
+		JButton submit = new JButton("Submit");
+
+		panel1.add(travellerName);
+		panel1.add(travellerNameInput);
+		panel1.add(travellerAge);
+		panel1.add(travellerAgeInput);
+		panel1.add(travellerCity);
+		panel1.add(travellerCityInput);
+		panel1.add(travellerCountry);
+		panel1.add(travellerCountryInput);
+		panel1.add(cityName);
+		panel1.add(cityNameInput);
+		panel1.add(cityCode);
+		panel1.add(cityCodeInput);
+		panel1.add(cafe);
+		panel1.add(cafeSlider);
+		panel1.add(sea);
+		panel1.add(seaSlider);
+		panel1.add(museums);
+		panel1.add(museumsSlider);
+		panel1.add(restaurant);
+		panel1.add(restaurantSlider);
+		panel1.add(stadium);
+		panel1.add(stadiumSlider);
+		panel1.add(park);
+		panel1.add(parkSlider);
+		panel1.add(club);
+		panel1.add(clubSlider);
+		panel1.add(festival);
+		panel1.add(festivalSlider);
+		panel1.add(hospital);
+		panel1.add(hospitalSlider);
+		panel1.add(theater);
+		panel1.add(theaterSlider);
+		panel1.add(submit);
+
+
+
+		JScrollPane pane = new JScrollPane(panel1);
+
+
+
+
+		// Set the window to be visible as the default to be false
+		frame.add(pane);
+		frame.setBounds(0,0,700,400);
+
+		frame.setVisible(true);
+
+
 	}
 }
