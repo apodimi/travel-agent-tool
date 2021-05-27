@@ -3,6 +3,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -60,7 +62,7 @@ public class Main {
 
 			}
 
-			Main.gui();
+			gui(travellers, map);
 
 			City athens = new City();
 			athens.findTheTermsForTheCity("Athens", "GR", athens);
@@ -116,18 +118,6 @@ public class Main {
 			System.out.println("There is something wrong: " + e + "");
 			con.close();
 		}
-
-		//Print all the travellers sorted based on the timestamp and remove duplicates
-		ArrayList<Traveller> sortedTravellers = sortTravellers(travellers);
-		for (Traveller traveller : sortedTravellers) {
-			System.out.println(traveller.getName()+" "+traveller.getTimestamp()+" "+traveller.getCity().getName());
-		}
-		City turin = new City();
-		turin.findTheTermsForTheCity("Turin", "IT", turin);
-		map.put("Turin", turin);
-
-		//writes all the travellers in a JSON file
-		writeJSON(travellers);
 	}
 
 	/**
@@ -184,7 +174,7 @@ public class Main {
 		return data.getAllTravellers();
 	}
 
-	private static void gui(){
+	private static void gui(ArrayList<Traveller> travellers, HashMap<String, City> cities){
 		// Create and set up a frame window
 		JFrame frame = new JFrame("Layout");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -200,10 +190,6 @@ public class Main {
 		JTextField travellerCityInput = new JTextField(20);
 		JLabel travellerCountry = new JLabel("Traveller country");
 		JTextField travellerCountryInput = new JTextField(20);
-		JLabel cityName = new JLabel("City name");
-		JTextField cityNameInput = new JTextField(20);
-		JLabel cityCode = new JLabel("City code");
-		JTextField cityCodeInput = new JTextField(20);
 
 		SpinnerModel spinnerModel1 = new SpinnerNumberModel(5, 0, 10, 1);
 		SpinnerModel spinnerModel2 = new SpinnerNumberModel(5, 0, 10, 1);
@@ -248,10 +234,6 @@ public class Main {
 		panel1.add(travellerCityInput);
 		panel1.add(travellerCountry);
 		panel1.add(travellerCountryInput);
-		panel1.add(cityName);
-		panel1.add(cityNameInput);
-		panel1.add(cityCode);
-		panel1.add(cityCodeInput);
 		panel1.add(cafe);
 		panel1.add(cafeSlider);
 		panel1.add(sea);
@@ -274,12 +256,7 @@ public class Main {
 		panel1.add(theaterSlider);
 		panel1.add(submit);
 
-
-
 		JScrollPane pane = new JScrollPane(panel1);
-
-
-
 
 		// Set the window to be visible as the default to be false
 		frame.add(pane);
@@ -287,6 +264,103 @@ public class Main {
 
 		frame.setVisible(true);
 
+		submit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int age;
+				try {
+					age = Integer.parseInt(travellerAgeInput.getText());
 
+					if (age >= 16 && age <= 25) {
+						//youngTraveller
+						YoungTraveller youngTraveller = new YoungTraveller();
+						youngTraveller.setAge(age);
+						youngTraveller.setName(travellerNameInput.getText());
+						try {
+							youngTraveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
+						} catch (IOException ioException) {
+							ioException.printStackTrace();
+						}
+						youngTraveller.setGeodesicVector(youngTraveller.getCity().getGeodesic_vector());
+
+						int[] terms = new int[10];
+						terms[0] = (int) seaSlider.getValue();
+						terms[1] = (int) cafeSlider.getValue();
+						terms[2] = (int) museumsSlider.getValue();
+						terms[3] = (int) restaurantSlider.getValue();
+						terms[4] = (int) stadiumSlider.getValue();
+						terms[5] = (int) parkSlider.getValue();
+						terms[6] = (int) clubSlider.getValue();
+						terms[7] = (int) festivalSlider.getValue();
+						terms[8] = (int) hospitalSlider.getValue();
+						terms[9] = (int) theaterSlider.getValue();
+						youngTraveller.setTermsVector(terms);
+
+						travellers.add(youngTraveller);
+					} else if (age > 25 && age <= 60) {
+						//middleTraveller
+						MiddleTraveller middleTraveller = new MiddleTraveller();
+						middleTraveller.setAge(age);
+						middleTraveller.setName(travellerNameInput.getText());
+						try {
+							middleTraveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
+						} catch (IOException ioException) {
+							ioException.printStackTrace();
+						}
+						middleTraveller.setGeodesicVector(middleTraveller.getCity().getGeodesic_vector());
+
+						int[] terms = new int[10];
+						terms[0] = (int) seaSlider.getValue();
+						terms[1] = (int) cafeSlider.getValue();
+						terms[2] = (int) museumsSlider.getValue();
+						terms[3] = (int) restaurantSlider.getValue();
+						terms[4] = (int) stadiumSlider.getValue();
+						terms[5] = (int) parkSlider.getValue();
+						terms[6] = (int) clubSlider.getValue();
+						terms[7] = (int) festivalSlider.getValue();
+						terms[8] = (int) hospitalSlider.getValue();
+						terms[9] = (int) theaterSlider.getValue();
+						middleTraveller.setTermsVector(terms);
+
+						travellers.add(middleTraveller);
+					} else if (age > 60 && age <= 115) {
+						//elderTraveller
+						ElderTraveller elderTraveller = new ElderTraveller();
+						elderTraveller.setAge(age);
+						elderTraveller.setName(travellerNameInput.getText());
+						try {
+							elderTraveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
+						} catch (IOException ioException) {
+							ioException.printStackTrace();
+						}
+						elderTraveller.setGeodesicVector(elderTraveller.getCity().getGeodesic_vector());
+
+						int[] terms = new int[10];
+						terms[0] = (int) seaSlider.getValue();
+						terms[1] = (int) cafeSlider.getValue();
+						terms[2] = (int) museumsSlider.getValue();
+						terms[3] = (int) restaurantSlider.getValue();
+						terms[4] = (int) stadiumSlider.getValue();
+						terms[5] = (int) parkSlider.getValue();
+						terms[6] = (int) clubSlider.getValue();
+						terms[7] = (int) festivalSlider.getValue();
+						terms[8] = (int) hospitalSlider.getValue();
+						terms[9] = (int) theaterSlider.getValue();
+						elderTraveller.setTermsVector(terms);
+
+						travellers.add(elderTraveller);
+					}
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+
+
+				try {
+					writeJSON(travellers);
+				} catch (IOException ioException) {
+					ioException.printStackTrace();
+				}
+			}
+		});
 	}
 }
