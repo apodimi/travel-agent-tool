@@ -64,60 +64,14 @@ public class Main {
 
 			gui(travellers, map);
 
-			City athens = new City();
-			athens.findTheTermsForTheCity("Athens", "GR", athens);
-			map.put(athens.getName(), athens);
-
-			City rome = new City();
-			rome.findTheTermsForTheCity("Rome", "IT", rome);
-			map.put(rome.getName(), rome);
 
 			boolean continueLoop = false;
 		} catch (Exception e) {
 			System.out.println("There is something wrong:" + e + "");
 		}
 
-		try {
 
-			//Create the query to database
-			String sql = "insert into CITY values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			PreparedStatement db = con.prepareStatement(sql);
 
-			// iterate to all the keys stored on our hashmap and add them to the database
-			for (String s: map.keySet()) {
-				ResultSet results = stmt.executeQuery("SELECT * FROM CITY");
-				boolean originalCity = true;
-				// For each row of
-				//Check for duplicate
-				while (results.next()) {
-					String city1 =results.getString(1);
-					String city2 =map.get(s).getName();
-					if (city1.equals(city2)){
-						originalCity = false;
-					}
-				}
-				//If the city is not in the database then is inserted
-				if (originalCity == true){
-					int arrWithTerms[] = map.get(s).getTerms_vector();
-					double arrWithGeo[] = map.get(s).getGeodesic_vector();
-					db.setString(1, map.get(s).getName());
-					for (int i =0; i< arrWithTerms.length; i++){
-						db.setInt((i+2), arrWithTerms[i]);
-					}
-					for (int i = 0; i <arrWithGeo.length; i++){
-						db.setDouble((i+12), arrWithGeo[i]);
-					}
-					db.executeUpdate();
-				}
-			}
-
-			//Close the connection to database
-			con.close();
-
-		} catch (Exception e) {
-			System.out.println("There is something wrong: " + e + "");
-			con.close();
-		}
 	}
 
 	/**
@@ -176,12 +130,19 @@ public class Main {
 
 	private static void gui(ArrayList<Traveller> travellers, HashMap<String, City> cities){
 		// Create and set up a frame window
-		JFrame frame = new JFrame("Layout");
+		JFrame frame = new JFrame("New Submit");
+
+		//Close the program when user click the exit button
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		//Panel with the inputs
 		JPanel panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
 		panel1.setLayout(new GridLayout(0, 2,30,30));
+		JLabel cityName = new JLabel("City name");
+		JTextField cityNameInput = new JTextField(20);
+		JLabel countryCode = new JLabel("Country code");
+		JTextField countryCodeInput = new JTextField(20);
 		JLabel travellerName = new JLabel("Traveller name");
 		JTextField travellerNameInput = new JTextField(20);
 		JLabel travellerAge = new JLabel("Traveller age");
@@ -201,8 +162,11 @@ public class Main {
 		SpinnerModel spinnerModel8 = new SpinnerNumberModel(5, 0, 10, 1);
 		SpinnerModel spinnerModel9 = new SpinnerNumberModel(5, 0, 10, 1);
 		SpinnerModel spinnerModel10 = new SpinnerNumberModel(5, 0, 10, 1);
+		SpinnerModel spinnerModel11 =new SpinnerNumberModel(3, 2, 5, 1);
 
 
+		JLabel numberOfCitiesToCompare = new JLabel("Number of the cities to compare");
+		JSpinner numberOfCitiesToCompareSlider = new JSpinner(spinnerModel11);
 		JLabel cafe = new JLabel("Cafe");
 		JSpinner cafeSlider = new JSpinner(spinnerModel1);
 		JLabel sea = new JLabel("Sea");
@@ -224,8 +188,10 @@ public class Main {
 		JLabel theater = new JLabel("Theater");
 		JSpinner theaterSlider = new JSpinner(spinnerModel10);
 
+		//Submit button
 		JButton submit = new JButton("Submit");
 
+		//Add the elements to the panel
 		panel1.add(travellerName);
 		panel1.add(travellerNameInput);
 		panel1.add(travellerAge);
@@ -234,6 +200,12 @@ public class Main {
 		panel1.add(travellerCityInput);
 		panel1.add(travellerCountry);
 		panel1.add(travellerCountryInput);
+		panel1.add(cityName);
+		panel1.add(cityNameInput);
+		panel1.add(countryCode);
+		panel1.add(countryCodeInput);
+		panel1.add(numberOfCitiesToCompare);
+		panel1.add(numberOfCitiesToCompareSlider);
 		panel1.add(cafe);
 		panel1.add(cafeSlider);
 		panel1.add(sea);
@@ -256,9 +228,10 @@ public class Main {
 		panel1.add(theaterSlider);
 		panel1.add(submit);
 
+		//Add scroll bar
 		JScrollPane pane = new JScrollPane(panel1);
 
-		// Set the window to be visible as the default to be false
+		//Add the panel to the frame
 		frame.add(pane);
 		frame.setBounds(0,0,700,400);
 
@@ -268,20 +241,21 @@ public class Main {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int age;
+
 				try {
 					age = Integer.parseInt(travellerAgeInput.getText());
 
 					if (age >= 16 && age <= 25) {
-						//youngTraveller
-						YoungTraveller youngTraveller = new YoungTraveller();
-						youngTraveller.setAge(age);
-						youngTraveller.setName(travellerNameInput.getText());
+						//traveller
+						YoungTraveller traveller = new YoungTraveller();
+						traveller.setAge(age);
+						traveller.setName(travellerNameInput.getText());
 						try {
-							youngTraveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
+							traveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
 						} catch (IOException ioException) {
 							ioException.printStackTrace();
 						}
-						youngTraveller.setGeodesicVector(youngTraveller.getCity().getGeodesic_vector());
+						traveller.setGeodesicVector(traveller.getCity().getGeodesic_vector());
 
 						int[] terms = new int[10];
 						terms[0] = (int) seaSlider.getValue();
@@ -294,20 +268,20 @@ public class Main {
 						terms[7] = (int) festivalSlider.getValue();
 						terms[8] = (int) hospitalSlider.getValue();
 						terms[9] = (int) theaterSlider.getValue();
-						youngTraveller.setTermsVector(terms);
+						traveller.setTermsVector(terms);
 
-						travellers.add(youngTraveller);
+						travellers.add(traveller);
 					} else if (age > 25 && age <= 60) {
-						//middleTraveller
-						MiddleTraveller middleTraveller = new MiddleTraveller();
-						middleTraveller.setAge(age);
-						middleTraveller.setName(travellerNameInput.getText());
+						//traveller
+						MiddleTraveller traveller = new MiddleTraveller();
+						traveller.setAge(age);
+						traveller.setName(travellerNameInput.getText());
 						try {
-							middleTraveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
+							traveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
 						} catch (IOException ioException) {
 							ioException.printStackTrace();
 						}
-						middleTraveller.setGeodesicVector(middleTraveller.getCity().getGeodesic_vector());
+						traveller.setGeodesicVector(traveller.getCity().getGeodesic_vector());
 
 						int[] terms = new int[10];
 						terms[0] = (int) seaSlider.getValue();
@@ -320,20 +294,20 @@ public class Main {
 						terms[7] = (int) festivalSlider.getValue();
 						terms[8] = (int) hospitalSlider.getValue();
 						terms[9] = (int) theaterSlider.getValue();
-						middleTraveller.setTermsVector(terms);
+						traveller.setTermsVector(terms);
 
-						travellers.add(middleTraveller);
+						travellers.add(traveller);
 					} else if (age > 60 && age <= 115) {
-						//elderTraveller
-						ElderTraveller elderTraveller = new ElderTraveller();
-						elderTraveller.setAge(age);
-						elderTraveller.setName(travellerNameInput.getText());
+						//traveller
+						ElderTraveller traveller = new ElderTraveller();
+						traveller.setAge(age);
+						traveller.setName(travellerNameInput.getText());
 						try {
-							elderTraveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
+							traveller.setCity(travellerCityInput.getText(), travellerCountryInput.getText(), cities);
 						} catch (IOException ioException) {
 							ioException.printStackTrace();
 						}
-						elderTraveller.setGeodesicVector(elderTraveller.getCity().getGeodesic_vector());
+						traveller.setGeodesicVector(traveller.getCity().getGeodesic_vector());
 
 						int[] terms = new int[10];
 						terms[0] = (int) seaSlider.getValue();
@@ -346,10 +320,61 @@ public class Main {
 						terms[7] = (int) festivalSlider.getValue();
 						terms[8] = (int) hospitalSlider.getValue();
 						terms[9] = (int) theaterSlider.getValue();
-						elderTraveller.setTermsVector(terms);
+						traveller.setTermsVector(terms);
 
-						travellers.add(elderTraveller);
+						travellers.add(traveller);
 					}
+
+					//City
+					String cityName = cityNameInput.getText();
+					String countryCode = countryCodeInput.getText();
+					int numberOfCitiesToCompare = (int) numberOfCitiesToCompareSlider.getValue();
+
+
+					JFrame result = new JFrame("Result");
+					result.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+					JPanel panel2 = new JPanel();
+					panel2.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+					panel2.setLayout(new GridLayout(0, 1,30,30));
+
+					JLabel similarity = new JLabel();
+					similarity.setText("Similarity: "+ String.valueOf(travellers.get(travellers.size()-1).calculateSimilarity(cityName,countryCode,cities,travellers)));
+
+					JLabel compareCities1 = new JLabel();
+					compareCities1.setText("First Compare: "+ String.valueOf(travellers.get(travellers.size()-1).compareCities(cities,travellers).getName()));
+
+					JLabel compareCities2 = new JLabel();
+					ArrayList<City> cityTemp = travellers.get(travellers.size()-1).compareCities(cities,numberOfCitiesToCompare,travellers);
+					String s = "";
+					for (City city : cityTemp) {
+						 s = s.concat(city.getName()+ ", ");
+					}
+					compareCities2.setText("Second Compare: "+ String.valueOf(s));
+
+					JLabel sortedTravellerLabel = new JLabel();
+					ArrayList<Traveller> sortedTraveller = sortTravellers(travellers);
+					String sort = "";
+					for (Traveller traveller : sortedTraveller) {
+						sort = sort.concat(traveller.getName()+ ",");
+					}
+					sortedTravellerLabel.setText("Sorted Travellers: "+ String.valueOf(sort));
+
+					City newCity = new City();
+					newCity.findTheTermsForTheCity(cityName, countryCode, newCity);
+					cities.put(newCity.getName(), newCity);
+
+					panel2.add(similarity);
+					panel2.add(compareCities1);
+					panel2.add(compareCities2);
+					panel2.add(sortedTravellerLabel);
+
+					JScrollPane pane1 = new JScrollPane(panel2);
+
+					result.add(pane1);
+					result.setBounds(30,30,500,500);
+					result.setVisible(true);
+
 				} catch (Exception exception) {
 					exception.printStackTrace();
 				}
@@ -357,10 +382,60 @@ public class Main {
 
 				try {
 					writeJSON(travellers);
-				} catch (IOException ioException) {
+					updateDb(cities);
+				} catch (IOException | SQLException ioException) {
 					ioException.printStackTrace();
 				}
 			}
 		});
 	}
-}
+
+	private static void updateDb(HashMap<String, City> map) throws SQLException {
+
+		//Create the connection with the database
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@oracle12c.hua.gr:1521:orcl", "IT219138", "IT219138");
+
+		//Create the statement object
+		Statement stmt = con.createStatement();
+		try {
+
+			//Create the query to database
+			String sql = "insert into CITY values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement db = con.prepareStatement(sql);
+
+			// iterate to all the keys stored on our hashmap and add them to the database
+			for (String s: map.keySet()) {
+				ResultSet results = stmt.executeQuery("SELECT * FROM CITY");
+				boolean originalCity = true;
+				// For each row of
+				//Check for duplicate
+				while (results.next()) {
+					String city1 =results.getString(1);
+					String city2 =map.get(s).getName();
+					if (city1.equals(city2)){
+						originalCity = false;
+					}
+				}
+				//If the city is not in the database then is inserted
+				if (originalCity == true){
+					int arrWithTerms[] = map.get(s).getTerms_vector();
+					double arrWithGeo[] = map.get(s).getGeodesic_vector();
+					db.setString(1, map.get(s).getName());
+					for (int i =0; i< arrWithTerms.length; i++){
+						db.setInt((i+2), arrWithTerms[i]);
+					}
+					for (int i = 0; i <arrWithGeo.length; i++){
+						db.setDouble((i+12), arrWithGeo[i]);
+					}
+					db.executeUpdate();
+				}
+			}
+
+			//Close the connection to database
+			con.close();
+
+		} catch (Exception e) {
+			System.out.println("There is something wrong: " + e + "");
+			con.close();
+		}
+}}

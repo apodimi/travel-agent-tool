@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class YoungTraveller extends Traveller {
     @Override
     public double calculateSimilarity(String cityName, String countryCode, HashMap<String, City> cities, ArrayList<Traveller> travellers) throws IOException {
         City city = checkIfCityExistsInCollection(cityName, countryCode, cities);
+        setTimestamp(new Timestamp(System.currentTimeMillis()));
         travellers.add(new YoungTraveller(this));
         return similarity(city);
     }
