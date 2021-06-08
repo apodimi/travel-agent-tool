@@ -84,27 +84,35 @@ public class City {
         //API KEY for the API
         String appid ="dd507317accd64c8447a7fadba863c9d";
 
-        //Call the method and take the data from OpenWeatherMap and Wikipedia
-        String theWikipediaText = OpenData.RetrieveData(city,country,appid, newCity);
+        try {
 
-        //Set the name of the city witch user choose
-        setName(city);
 
-        //Set the code of the country
-        setCountryCode(country);
+            //Call the method and take the data from OpenWeatherMap and Wikipedia
+            String theWikipediaText = OpenData.RetrieveData(city, country, appid, newCity);
 
-        int theCafeNumber = CountWords.countCriterionfCity(theWikipediaText,"cafe");
-        int theSeaNumber = CountWords.countCriterionfCity(theWikipediaText,"sea");
-        int theMuseumsNumber = CountWords.countCriterionfCity(theWikipediaText,"museums");
-        int theRestaurantNumber = CountWords.countCriterionfCity(theWikipediaText,"restaurant");
-        int theStadiumNumber = CountWords.countCriterionfCity(theWikipediaText,"stadium");
-        int theParkNumber = CountWords.countCriterionfCity(theWikipediaText,"park");
-        int theClubNumber = CountWords.countCriterionfCity(theWikipediaText,"club");
-        int theFestivalNumber = CountWords.countCriterionfCity(theWikipediaText,"festival");
-        int theHospitalNumber = CountWords.countCriterionfCity(theWikipediaText,"hospital");
-        int theTheaterNumber = CountWords.countCriterionfCity(theWikipediaText,"theater");
+            //Set the name of the city witch user choose
+            setName(city);
 
-        setTerms_vector(theCafeNumber,theSeaNumber,theMuseumsNumber,theRestaurantNumber,theStadiumNumber,theParkNumber,theClubNumber,theFestivalNumber,theHospitalNumber,theTheaterNumber);
+            //Set the code of the country
+            setCountryCode(country);
+
+            int theCafeNumber = CountWords.countCriterionfCity(theWikipediaText, "cafe");
+            int theSeaNumber = CountWords.countCriterionfCity(theWikipediaText, "sea");
+            int theMuseumsNumber = CountWords.countCriterionfCity(theWikipediaText, "museums");
+            int theRestaurantNumber = CountWords.countCriterionfCity(theWikipediaText, "restaurant");
+            int theStadiumNumber = CountWords.countCriterionfCity(theWikipediaText, "stadium");
+            int theParkNumber = CountWords.countCriterionfCity(theWikipediaText, "park");
+            int theClubNumber = CountWords.countCriterionfCity(theWikipediaText, "club");
+            int theFestivalNumber = CountWords.countCriterionfCity(theWikipediaText, "festival");
+            int theHospitalNumber = CountWords.countCriterionfCity(theWikipediaText, "hospital");
+            int theTheaterNumber = CountWords.countCriterionfCity(theWikipediaText, "theater");
+
+            setTerms_vector(theCafeNumber, theSeaNumber, theMuseumsNumber, theRestaurantNumber, theStadiumNumber, theParkNumber, theClubNumber, theFestivalNumber, theHospitalNumber, theTheaterNumber);
+        }catch (Exception e){
+            System.out.println("Something went wrong");
+        }
     }
+
+
 
 }

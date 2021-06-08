@@ -67,7 +67,7 @@ public class Main {
 
 			boolean continueLoop = false;
 		} catch (Exception e) {
-			System.out.println("There is something wrong:" + e + "");
+			System.out.println("There is something wrong: with map");
 		}
 
 
@@ -129,6 +129,7 @@ public class Main {
 	}
 
 	private static void gui(ArrayList<Traveller> travellers, HashMap<String, City> cities){
+
 		// Create and set up a frame window
 		JFrame frame = new JFrame("New Submit");
 
@@ -360,9 +361,19 @@ public class Main {
 					}
 					sortedTravellerLabel.setText("Sorted Travellers: "+ String.valueOf(sort));
 
+
 					City newCity = new City();
 					newCity.findTheTermsForTheCity(cityName, countryCode, newCity);
+
+					double[] tempVectors = newCity.getGeodesic_vector();
+					if (tempVectors[0] == 0 && tempVectors[1] == 0){
+						cities.remove(newCity.getName());
+						throw new incorrectObjectException();
+					}
+
+
 					cities.put(newCity.getName(), newCity);
+
 
 					panel2.add(similarity);
 					panel2.add(compareCities1);
@@ -375,8 +386,12 @@ public class Main {
 					result.setBounds(30,30,500,500);
 					result.setVisible(true);
 
-				} catch (Exception exception) {
-					exception.printStackTrace();
+
+
+				} catch (incorrectObjectException | IOException incorrectObjectException) {
+					JFrame error = new JFrame();
+					JOptionPane.showMessageDialog(error, "Something went wrong. Check the inputs and try again");
+
 				}
 
 
@@ -435,7 +450,7 @@ public class Main {
 			con.close();
 
 		} catch (Exception e) {
-			System.out.println("There is something wrong: " + e + "");
+			System.out.println("There is something wrong: with the database inputs");
 			con.close();
 		}
 }}
