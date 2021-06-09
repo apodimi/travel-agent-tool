@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -87,34 +86,5 @@ public class YoungTraveller extends Traveller {
     @Override
     public String toString() {
         return "YoungTraveller [ name: "+getName()+", age: "+age+", visit: "+getVisit()+", timestamp: "+getTimestamp()+", termsVector: "+Arrays.toString(getTermsVector())+", city: "+getCity().getName()+", geodesicVector: "+Arrays.toString(getGeodesicVector())+" ]";
-    }
-
-    /**
-     * checks if the traveller has the biggest similarity for the city in order to win the free ticket
-     * @param travellers array list containing all the travellers
-     * @param city the city with the free ticket
-     * @param cities hash map containing all the cities
-     */
-    public void freeTicketEligibility(ArrayList<Traveller> travellers, City city, HashMap<String, City> cities) throws IOException {
-        ArrayList<Double> similarities = new ArrayList<>();
-        ArrayList<Traveller> sortedTravellers = Main.sortTravellers(travellers);
-
-        for (Traveller sortedTraveller : sortedTravellers) {
-            similarities.add(sortedTraveller.calculateSimilarity(city.getName(), city.getCountryCode(), cities, travellers));
-        }
-
-        double maxSimilarity = calculateSimilarity(city.getName(), city.getCountryCode(), cities, travellers);
-        boolean newMaxSimilarity = false;
-        for (Double similarity : similarities) {
-            if (maxSimilarity < similarity) {
-                newMaxSimilarity = true;
-                break;
-            }
-        }
-
-        if (!newMaxSimilarity) {
-            JFrame frame = new JFrame();
-            JOptionPane.showMessageDialog(frame, "Congratulations YoungTraveller! You've won a FREE ticket to " + city.getName());
-        }
     }
 }

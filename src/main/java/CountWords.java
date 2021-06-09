@@ -8,6 +8,7 @@ public class CountWords {
     /*public static int countDistinctWords(String str) {
         String s[]=str.split(" ");
         ArrayList<String> list=new ArrayList<String>();
+
         for (int i = 1; i < s.length; i++) {
             if (!(list.contains(s[i]))) {
                 list.add(s[i]);

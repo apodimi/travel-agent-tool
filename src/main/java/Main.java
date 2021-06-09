@@ -67,8 +67,11 @@ public class Main {
 
 			boolean continueLoop = false;
 		} catch (Exception e) {
-			System.out.println("There is something wrong:" + e + "");
+			System.out.println("There is something wrong: with map");
 		}
+
+
+
 	}
 
 	/**
@@ -76,7 +79,7 @@ public class Main {
 	 * @param travellers an arrayList containing all the travellers
 	 * @return an arrayList with travellers sorted and without duplicates
 	 */
-	public static ArrayList<Traveller> sortTravellers(ArrayList<Traveller> travellers) {
+	private static ArrayList<Traveller> sortTravellers(ArrayList<Traveller> travellers) {
 		ArrayList<Traveller> tmp = removeDuplicates(travellers);
 		Collections.sort(tmp);
 		return tmp;
@@ -126,6 +129,7 @@ public class Main {
 	}
 
 	private static void gui(ArrayList<Traveller> travellers, HashMap<String, City> cities){
+
 		// Create and set up a frame window
 		JFrame frame = new JFrame("New Submit");
 
@@ -267,8 +271,6 @@ public class Main {
 						terms[9] = (int) theaterSlider.getValue();
 						traveller.setTermsVector(terms);
 
-						traveller.freeTicketEligibility(travellers, cities.get("Rome"), cities);
-
 						travellers.add(traveller);
 					} else if (age > 25 && age <= 60) {
 						//traveller
@@ -294,8 +296,6 @@ public class Main {
 						terms[8] = (int) hospitalSlider.getValue();
 						terms[9] = (int) theaterSlider.getValue();
 						traveller.setTermsVector(terms);
-
-						traveller.freeTicketEligibility(travellers, cities.get("Rome"), cities);
 
 						travellers.add(traveller);
 					} else if (age > 60 && age <= 115) {
@@ -323,8 +323,6 @@ public class Main {
 						terms[9] = (int) theaterSlider.getValue();
 						traveller.setTermsVector(terms);
 
-						traveller.freeTicketEligibility(travellers, cities.get("Rome"), cities);
-
 						travellers.add(traveller);
 					}
 
@@ -335,6 +333,7 @@ public class Main {
 
 
 					JFrame result = new JFrame("Result");
+					result.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 					JPanel panel2 = new JPanel();
 					panel2.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
@@ -362,14 +361,19 @@ public class Main {
 					}
 					sortedTravellerLabel.setText("Sorted Travellers: "+ String.valueOf(sort));
 
+
 					City newCity = new City();
 					newCity.findTheTermsForTheCity(cityName, countryCode, newCity);
+
 					double[] tempVectors = newCity.getGeodesic_vector();
 					if (tempVectors[0] == 0 && tempVectors[1] == 0){
 						cities.remove(newCity.getName());
 						throw new incorrectObjectException();
 					}
+
+
 					cities.put(newCity.getName(), newCity);
+
 
 					panel2.add(similarity);
 					panel2.add(compareCities1);
@@ -382,9 +386,12 @@ public class Main {
 					result.setBounds(30,30,500,500);
 					result.setVisible(true);
 
+
+
 				} catch (incorrectObjectException | IOException incorrectObjectException) {
 					JFrame error = new JFrame();
 					JOptionPane.showMessageDialog(error, "Something went wrong. Check the inputs and try again");
+
 				}
 
 
@@ -443,7 +450,7 @@ public class Main {
 			con.close();
 
 		} catch (Exception e) {
-			System.out.println("There is something wrong: " + e + "");
+			System.out.println("There is something wrong: with the database inputs");
 			con.close();
 		}
 }}

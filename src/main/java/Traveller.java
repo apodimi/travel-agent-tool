@@ -1,12 +1,7 @@
-import com.sun.org.apache.xpath.internal.SourceTree;
-
 import javax.swing.text.TabableView;
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class Traveller implements Comparable<Traveller>{
 	private int[] termsVector; //degree for each term
@@ -15,7 +10,6 @@ public abstract class Traveller implements Comparable<Traveller>{
 	protected final int maxdist = 15317; //Athens to Sydney
 	private Timestamp timestamp; //time of search
 	private String visit; //name of the city that we recommend
-	private String name; //the name of the traveller
 
 	/**
 	 * gets the name of the traveller
@@ -32,6 +26,8 @@ public abstract class Traveller implements Comparable<Traveller>{
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	private String name; //the name of the traveller
 
 	/**
 	 * gets the name of the city that we recommend
@@ -142,9 +138,6 @@ public abstract class Traveller implements Comparable<Traveller>{
 			}
 		}
 
-		//sets the city we recommend to visit
-		setVisit(maxCity.getName());
-
 		return maxCity;
 	}
 
@@ -238,57 +231,5 @@ public abstract class Traveller implements Comparable<Traveller>{
 			cities.put(cityName, newCity);
 		}
 		return cities.get(cityName);
-	}
-
-	public String collaborativeFiltering(ArrayList<Traveller> travellers) {
-		ArrayList<Integer> dotProducts = new ArrayList<>();
-		for (int i = 0; i < travellers.size(); i++) {
-			dotProducts.add(calculateDotProduct(getTermsVector(), travellers.get(i).getTermsVector()));
-		}
-
-		Map<String, Integer> cityToRank = travellers.stream()
-													.collect(Collectors.toMap(i->i.getVisit(), i->calculateDotProduct(i.getTermsVector(),getTermsVector()), (a1,a2)->a1));
-		cityToRank.forEach((k, v)->System.out.println("City " + k +" rank: " + v));
-
-		Optional<Map.Entry<String, Integer>> maxEntry = cityToRank.entrySet().stream().max(Map.Entry.comparingByValue());
-
-		return maxEntry.get().getKey();
-	}
-
-	private int calculateDotProduct(int[] a, int[] b) {
-		int sum = 0;
-		for (int i = 0; i < a.length; i++) {
-			sum += a[i] * b[i];
-		}
-
-		return sum;
-	}
-
-	/**
-	 * checks if the traveller has the biggest similarity for the city in order to win the free ticket
-	 * @param travellers array list containing all the travellers
-	 * @param city the city with the free ticket
-	 * @param cities hash map containing all the cities
-	 */
-	public void freeTicketEligibility(ArrayList<Traveller> travellers, City city, HashMap<String, City> cities) throws IOException {
-		ArrayList<Double> similarities = new ArrayList<>();
-		ArrayList<Traveller> sortedTravellers = Main.sortTravellers(travellers);
-
-		for (Traveller sortedTraveller : sortedTravellers) {
-			similarities.add(sortedTraveller.calculateSimilarity(city.getName(), city.getCountryCode(), cities, travellers));
-		}
-
-		double maxSimilarity = calculateSimilarity(city.getName(), city.getCountryCode(), cities, travellers);
-		boolean newMaxSimilarity = false;
-		for (Double similarity : similarities) {
-			if (maxSimilarity < similarity) {
-				newMaxSimilarity = true;
-				break;
-			}
-		}
-
-		if (!newMaxSimilarity) {
-			System.out.println("Congratulations! You've won a FREE ticket to " + city.getName());
-		}
 	}
 }
