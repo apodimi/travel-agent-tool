@@ -27,7 +27,7 @@ public class Main {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 
 		//Create the connection with the database
-		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@oracle12c.hua.gr:1521:orcl", "IT219138", "IT219138");
+		Connection con = DriverManager.getConnection("[jdbc]", "[username]", "[password]");
 
 		//Create the statement object
 		Statement stmt = con.createStatement();
